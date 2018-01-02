@@ -4,13 +4,16 @@
 #include <string>
 #include <vector>
 
+class HuffmanTree;
+
 class FrequencyTable{
 private:
+  friend class HuffmanTree;
   struct pair {
-    char first;
-    int second;
+    char symbol;
+    int numOcc;
 
-    pair(char _first, int _second) : first(_first), second(_second){}
+    pair(char _symbol, int _numOcc) : symbol(_symbol), numOcc(_numOcc){}
   };
 
   std::vector<pair> *table;

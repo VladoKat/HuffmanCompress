@@ -6,9 +6,9 @@ FrequencyTable::FrequencyTable(std::string str){
     char current = str[i];
     bool exists = false;
     for(int j = 0; j < table->size(); j++){
-      if(current == (*table)[j].first){
+      if(current == (*table)[j].symbol){
         exists = true;
-        (*table)[j].second++;
+        (*table)[j].numOcc++;
       }
     }
     if(!exists){
@@ -19,6 +19,6 @@ FrequencyTable::FrequencyTable(std::string str){
 
 void FrequencyTable::print(){
   for(int i = 0; i < (*table).size(); i++){
-    std::cout << (*table)[i].first << " - " << (*table)[i].second << "\n";
+    std::cout << (*table)[i].symbol << " - " << (*table)[i].numOcc << "\n";
   }
 }

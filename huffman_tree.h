@@ -8,8 +8,8 @@ private:
   struct TreeNode {
     int numOcc;
     char symbol;
-    *TreeNode left;
-    *TreeNode right;
+    TreeNode *left;
+    TreeNode *right;
 
     TreeNode(int _numOcc, char _symbol) : symbol(_symbol),
                                           numOcc(_numOcc),
@@ -22,7 +22,7 @@ private:
 public:
   //HuffmanTree() : root(nullptr);
   HuffmanTree(FrequencyTable);
-  
+  HuffmanTree(int, char);
 
 };
 

@@ -3,6 +3,7 @@
 #include<string>
 
 #include "frequency_table.cpp"
+#include "huffman_tree.cpp"
 
 // void fullTest(){
 //   std::ifstream in;
@@ -36,6 +37,8 @@ void frequencyTableTest(){
 
   FrequencyTable table(myString);
   table.print();
+  std::cout << "\n";
+  HuffmanTree tree(table);
 }
 int main(){
 
