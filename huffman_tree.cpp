@@ -1,116 +1,116 @@
 #include "huffman_tree.h"
 #include<vector>
 
-HuffmanTree::HuffmanTree(int rootNumOcc, char rootSymbol){
-  root = new TreeNode (rootNumOcc, rootSymbol);
-}
 
-HuffmanTree::TreeNode::TreeNode(const TreeNode& other){
-  this->numOcc = other.numOcc;
-  symbol = other.symbol;
-  left = other.left;
-  right = other.right;
-}
 
 HuffmanTree::TreeNode::~TreeNode(){
+  if(left)
   delete left;
+  if(right)
   delete right;
-}
-HuffmanTree::HuffmanTree(const HuffmanTree &left, const HuffmanTree &right){
-  root = new HuffmanTree::TreeNode(left.root->numOcc + right.root->numOcc, left.root->symbol);
-  root->left = new HuffmanTree::TreeNode(*(left.root));
-  root->right = new HuffmanTree::TreeNode(*(right.root));
-}
-
-HuffmanTree::HuffmanTree(const HuffmanTree& other){
-  root = new HuffmanTree::TreeNode(*(other.root));
 }
 
 HuffmanTree::~HuffmanTree(){
+  if(root)
   delete root;
 }
+HuffmanTree::HuffmanTree():root(nullptr){}
 
-HuffmanTree HuffmanTree::operator= (const HuffmanTree& other){
-  if (this != &other){
-      root = new HuffmanTree::TreeNode(*(other.root));
+void HuffmanTree::printHelper(TreeNode* curr){
+  if(curr){
+    std::cout << curr->symbol << " - " << curr->numOcc << "  ";
+    printHelper(curr->left);
+    printHelper(curr->right);
   }
-  return *this;
+}
+void HuffmanTree::print(){
+  printHelper(root);
+  std::cout << "\n";
 }
 
-std::vector<HuffmanTree>* HuffmanTree::remove (const HuffmanTree &el, std::vector<HuffmanTree> *all){
-  std::cout << "1.Remove starts with size " << all->size() << "\n";
-  int index = 0;
-  bool found = false;
-  for(int i = 0; i < all->size() && !found; i++){
-    if(el.root->symbol == (*all)[i].root->symbol && el.root->numOcc == (*all)[i].root->numOcc){
-      found = true;
-      index = i;
-    }
+void HuffmanTree::printLeavesHelper(TreeNode* curr){
+  if(curr && !curr->left && !curr->right){
+    std::cout << curr->symbol << " - " << curr->numOcc << "\n";
   }
-  if(found){
-    std::cout <<"2.Element found - " << (*all)[index].root->symbol << " " << (*all)[index].root->numOcc << " at " << index << "\n";
+  if(!curr){
+    return;
   }
-  std::vector <HuffmanTree> buffer;
-  for (int i = 0; i < all->size(); i++){
-    if(i != index ){
-      std::cout << "3." << i << "pushed into buffer\n";
-      buffer.push_back((*all)[i]);
-    }
-  }
-  *all = buffer;
-  return all;
-
+  printLeavesHelper(curr->left);
+  printLeavesHelper(curr->right);
 }
-HuffmanTree::HuffmanTree(FrequencyTable freqTable){
-  std::vector<HuffmanTree> *trees = new std::vector<HuffmanTree>;
-
-  //-------------------filling trees with 1-root trees;
-  for(int i = 0; i < (*(freqTable.table)).size(); i++){
-    (*trees).push_back(HuffmanTree((*(freqTable.table))[i].numOcc, (*(freqTable.table))[i].symbol));
-    //std::cout << (*trees)[i].root -> numOcc << " " << (*trees)[i].root -> symbol << "\n";
+void HuffmanTree::printLeaves(){
+  printLeavesHelper(root);
+  std::cout << "\n";
+}
+HuffmanTree::TreeNode* HuffmanTree::copyFrom(TreeNode* crr){
+  if(!crr){
+    return nullptr;
   }
-  for(int i = 0; i < trees->size(); i++){
-    std::cout << (*trees)[i].root -> numOcc << " " << (*trees)[i].root -> symbol << "\n";
+  return new HuffmanTree::TreeNode(crr->numOcc, crr->symbol,
+                      copyFrom(crr->left), copyFrom(crr->right));
+}
+HuffmanTree::HuffmanTree(const HuffmanTree& other){
+  root = copyFrom(other.root);
+}
+
+HuffmanTree::HuffmanTree(int numOcc, char symbol) {
+  root = new HuffmanTree::TreeNode(numOcc, symbol);
+}
+
+HuffmanTree HuffmanTree::findMin(std::vector<HuffmanTree*> trees){
+  //std::cout << "findingMIn\n";
+  int min = trees[0]->root->numOcc;
+  HuffmanTree* minTree = trees[0];
+  for(HuffmanTree* tree : trees){
+    if(tree->root->numOcc < min){
+      min = tree->root->numOcc;
+      minTree = tree;
+    }
   }
+  return *minTree;
+}
 
-  while (trees -> size() > 2){
-    HuffmanTree min = (*trees)[0];
-    for (int i = 0; i < trees->size(); i++){
-      if(min.root->numOcc > (*trees)[i].root->numOcc){
-        std::cout << "FINDING AN ELEMENT\n";
-        min = (*trees)[i];
-      }
+void HuffmanTree::remove(std::vector<HuffmanTree*>& trees, const HuffmanTree& toRemove){
+  std::vector<HuffmanTree*> result;
+  for(HuffmanTree* tree : trees){
+    if(!(tree->root->numOcc == toRemove.root->numOcc &&
+       tree->root->symbol == toRemove.root->symbol)){
+         result.push_back(tree);
+    } else {
+      delete tree;
     }
-    trees = HuffmanTree::remove(min, trees);
-    for(int i = 0; i < trees->size(); i++){
-      std::cout << (*trees)[i].root -> numOcc << " " << (*trees)[i].root -> symbol << "\n";
-    }
-    std::cout << "\n";
-
-
-
-
-    HuffmanTree secondMin = (*trees)[0];
-    for (int i = 0; i < trees->size(); i++){
-      if(secondMin.root->numOcc > (*trees)[i].root->numOcc){
-        std::cout << "FINDING AN ELEMENT\n";
-        secondMin = (*trees)[i];
-      }
-    }
-    trees = HuffmanTree::remove(secondMin, trees);
-    for(int i = 0; i < trees->size(); i++){
-      std::cout << (*trees)[i].root -> numOcc << " " << (*trees)[i].root -> symbol << "\n";
-    }
-    std::cout << "\n";
-
-
-
-    trees->push_back(HuffmanTree(min, secondMin));
-
-    for(int i = 0; i < trees->size(); i++){
-      std::cout << (*trees)[i].root -> numOcc << " " << (*trees)[i].root -> symbol << "\n";
-    }
-    std::cout << "\n";
-
   }
+  trees = result;
+}
+
+void HuffmanTree::makeTree(std::vector<HuffmanTree*>& trees){
+  if(trees.size() == 1){
+    return;
+  }
+  HuffmanTree min1 = findMin(trees);
+  HuffmanTree::remove(trees, min1);
+  HuffmanTree min2 = findMin(trees);
+  HuffmanTree::remove(trees, min2);
+//  std::cout << "removed\n";
+  //creating new tree
+  HuffmanTree* toPush = new HuffmanTree(min1.root->numOcc + min2.root->numOcc,min1.root->symbol);
+  toPush->root->left = copyFrom(min1.root);
+  toPush->root->right = copyFrom(min2.root);
+  //end of creating new tree
+  trees.push_back(toPush);
+  // for(int i = 0 ; i < trees.size(); i++){
+  //   trees[i]->print();
+  // }
+  // std::cout << "\n\n";
+  makeTree(trees);
+}
+
+HuffmanTree::HuffmanTree(FrequencyTable table){
+  std::vector<HuffmanTree*> trees;
+  for(int i = 0; i < table.table.size(); i++){
+    trees.push_back(new HuffmanTree(table.table[i].numOcc, table.table[i].symbol)) ;
+  }
+  makeTree(trees);
+  root = copyFrom(trees[0]->root);
+  //trees[0]->printLeaves();
 }

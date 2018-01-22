@@ -39,8 +39,9 @@ void frequencyTableTest(){
   table.print();
   std::cout << "\n";
   HuffmanTree tree(table);
+  tree.printLeaves();
 }
 int main(){
 
-frequencyTableTest();
+  frequencyTableTest();
 }

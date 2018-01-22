@@ -16,7 +16,7 @@ private:
     pair(char _symbol, int _numOcc) : symbol(_symbol), numOcc(_numOcc){}
   };
 
-  std::vector<pair> *table;
+  std::vector<pair> table;
 public:
   FrequencyTable(std::string);
   void print();
