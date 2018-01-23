@@ -3,8 +3,11 @@
 
 #include "frequency_table.h"
 
+class Map;
+
 class HuffmanTree {
 private:
+  friend class Map;
   struct TreeNode {
     int numOcc;
     char symbol;
@@ -30,6 +33,7 @@ private:
   static std::vector<HuffmanTree>* remove (const HuffmanTree &, std::vector<HuffmanTree> *);
   TreeNode* copyFrom (TreeNode*);
   //static HuffmanTree convertFrom(const FrequencyTable&);
+  static void writeHelper (std::ostream&, TreeNode*);
 
   TreeNode *root;
 
@@ -42,7 +46,11 @@ public:
   // HuffmanTree operator= (const HuffmanTree&);
   void print();
   void printLeaves();
-};
+  friend std::ostream& operator<< (std::ostream&, const HuffmanTree&);
+  TreeNode* readFromStream(std::istream&);
 
+//  static std::string compress (const std::string&, const HuffmanTree&);
+};
+std::ostream& operator<< (std::ostream&, const HuffmanTree&);
 
 #endif

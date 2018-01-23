@@ -114,3 +114,58 @@ HuffmanTree::HuffmanTree(FrequencyTable table){
   root = copyFrom(trees[0]->root);
   //trees[0]->printLeaves();
 }
+
+void HuffmanTree::writeHelper (std::ostream& out, TreeNode* curr){
+  if (curr == nullptr)
+  {
+    out << "()";
+    return;
+  }
+
+  out << "(" << curr->symbol;
+  writeHelper (out, curr->left);
+  writeHelper (out, curr->right);
+  out << ")";
+}
+std::ostream& operator<< (std::ostream& out, const HuffmanTree& tree){
+  HuffmanTree::writeHelper(out, tree.root);
+  return out;
+}
+
+HuffmanTree::TreeNode* HuffmanTree::readFromStream(std::istream& in){
+
+  char nextChar;
+  nextChar = in.get();
+  //assert (nextChar == '(');
+
+  nextChar = in.get();
+//  assert (nextChar == ' ' || nextChar == ')');
+
+  if (nextChar == ')')
+  {
+    return nullptr;
+  }
+  //γΆ¥ΰ¥­¨ α¬¥, η¥ Ά ―®β®ª  α«¥¤Ά β α«¥¤­¨β¥ ­¥ι :
+  //1. ‘’‰‘’ € …€. …€…, —… …€’ >>T …’ ™…  ‡—…’…
+
+  char rootValue;
+  in >> rootValue;
+
+
+  //3. ‹‚ „„‚
+
+  TreeNode *leftSubTree;
+  leftSubTree = readFromStream (in);
+
+
+  //5. „‘ „„‚
+
+  TreeNode *rightSubTree;
+  rightSubTree = readFromStream (in);
+
+  //7. § βΆ ΰοι  αª®΅ 
+
+  nextChar = in.get();
+  //assert (nextChar == ')');
+  return new TreeNode(0, rootValue, leftSubTree, rightSubTree);
+}
