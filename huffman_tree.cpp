@@ -1,5 +1,6 @@
 #include "huffman_tree.h"
 #include<vector>
+#include<stack>
 
 
 
@@ -116,16 +117,16 @@ HuffmanTree::HuffmanTree(FrequencyTable table){
 }
 
 void HuffmanTree::writeHelper (std::ostream& out, TreeNode* curr){
-  if (curr == nullptr)
+  if (!curr)
   {
-    out << "()";
+    out << "{}";
     return;
   }
 
-  out << "(" << curr->symbol;
+  out << "{" << curr->symbol;
   writeHelper (out, curr->left);
   writeHelper (out, curr->right);
-  out << ")";
+  out << "}";
 }
 std::ostream& operator<< (std::ostream& out, const HuffmanTree& tree){
   HuffmanTree::writeHelper(out, tree.root);
@@ -133,39 +134,103 @@ std::ostream& operator<< (std::ostream& out, const HuffmanTree& tree){
 }
 
 HuffmanTree::TreeNode* HuffmanTree::readFromStream(std::istream& in){
-
-  char nextChar;
-  nextChar = in.get();
-  //assert (nextChar == '(');
-
-  nextChar = in.get();
-//  assert (nextChar == ' ' || nextChar == ')');
-
-  if (nextChar == ')')
+  //(A(A()())(C(C(C()())(D()()))(B(B()())(R()()))))
+  unsigned char nextChar;
+  nextChar = in.get();//assert (nextChar == '(');
+  nextChar = in.get(); // get Value
+  if (nextChar == '}')
   {
     return nullptr;
   }
-  //ã¢¥à¥­¨ á¬¥, ç¥ ¢ ¯®â®ª  á«¥¤¢ â á«¥¤­¨â¥ ­¥é :
-  //1. ‘’Ž‰Ž‘’ € ŠŽ…€. ˆ…Œ€Œ…, —… Ž…€’Ž >>T ŠŽ…Š’Ž ™… Ÿ ˆ‡—…’…
-
-  char rootValue;
-  in >> rootValue;
-
-
-  //3. ‹Ÿ‚Ž Ž„„š‚Ž
-
+  unsigned char rootValue = nextChar;
   TreeNode *leftSubTree;
   leftSubTree = readFromStream (in);
-
-
-  //5. „Ÿ‘Ž Ž„„š‚Ž
-
   TreeNode *rightSubTree;
   rightSubTree = readFromStream (in);
-
-  //7. § â¢ àïé  áª®¡ 
-
-  nextChar = in.get();
-  //assert (nextChar == ')');
+  nextChar = in.get();//assert (nextChar == ')');
   return new TreeNode(0, rootValue, leftSubTree, rightSubTree);
+}
+void HuffmanTree::read(std::istream& input){
+  this->root = readFromStream(input);
+}
+
+std::string HuffmanTree::decompress(const std::string& txt){
+  std::string tempRes = "";
+  for(int i = 0; i < txt.size()-1; i++){
+    tempRes = tempRes + this->reconvert(txt[i]);
+  }
+  tempRes = tempRes + reconvertWithoutFill(txt[txt.size()-1]);
+  std::cout << " binary - " << tempRes << "\n";
+  std::string result = traverse(tempRes);
+  return result;
+}
+
+void HuffmanTree::getFromTree(TreeNode* curr, std::string& str, unsigned char& result){
+  if(curr && !curr->left && !curr->right){
+    result = curr->symbol;
+    return;
+  }
+  if(str.empty()){
+    std::cout << "smth wrong!";
+    return;
+  }
+
+  if(str[0] == '0'){
+    str = str.substr(1, str.size());
+    getFromTree(curr->left, str, result);
+  } else {
+    str = str.substr(1, str.size());
+    getFromTree(curr->right, str, result);
+  }
+}
+std::string HuffmanTree::traverse(std::string binary){
+  //std::cout << "traversing\n";
+  if(binary == ""){
+    return "";
+  }
+  unsigned char toPush = 0;
+  getFromTree(root, binary, toPush);
+  std::string symb;
+  symb.push_back(toPush);
+  std::cout << toPush << " ";
+  return symb + traverse(binary);
+}
+
+std::string HuffmanTree::reconvertWithoutFill(unsigned char symbol){
+  std::string result;
+  std::stack<unsigned char> buffer;
+  unsigned char toPush;
+  while(symbol > 0){
+    toPush = symbol % 2 + 48;
+    symbol /= 2;
+    buffer.push(toPush);
+  }
+  while(!buffer.empty()){
+    result.push_back(buffer.top());
+    buffer.pop();
+  }
+
+  return result;
+}
+
+std::string HuffmanTree::reconvert(unsigned char symbol){
+  std::string result;
+  std::stack<unsigned char> buffer;
+  unsigned char toPush;
+  while(symbol > 0){
+    toPush = symbol % 2 + 48;
+    symbol /= 2;
+    buffer.push(toPush);
+  }
+  int size = buffer.size();
+  while(size < 8){
+    buffer.push('0');
+    size++;
+  }
+  while(!buffer.empty()){
+    result.push_back(buffer.top());
+    buffer.pop();
+  }
+
+  return result;
 }

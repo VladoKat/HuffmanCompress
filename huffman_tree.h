@@ -34,7 +34,11 @@ private:
   TreeNode* copyFrom (TreeNode*);
   //static HuffmanTree convertFrom(const FrequencyTable&);
   static void writeHelper (std::ostream&, TreeNode*);
-
+  TreeNode* readFromStream(std::istream&);
+  void getFromTree(TreeNode*, std::string&, unsigned char&);
+  std::string traverse(std::string);
+  std::string reconvert(unsigned char);
+  std::string reconvertWithoutFill(unsigned char);
   TreeNode *root;
 
 public:
@@ -47,9 +51,12 @@ public:
   void print();
   void printLeaves();
   friend std::ostream& operator<< (std::ostream&, const HuffmanTree&);
-  TreeNode* readFromStream(std::istream&);
 
-//  static std::string compress (const std::string&, const HuffmanTree&);
+  std::string decompress(const std::string&);
+  void read(std::istream&);
+
+  //static std::string compress (const std::string&, const HuffmanTree&);
+
 };
 std::ostream& operator<< (std::ostream&, const HuffmanTree&);
 
