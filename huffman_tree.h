@@ -2,9 +2,9 @@
 #define HUFFMAN_TREE_H
 
 #include "frequency_table.h"
-
+//#include "map.h"
+//class Map;
 class Map;
-
 class HuffmanTree {
 private:
   friend class Map;
@@ -37,8 +37,9 @@ private:
   TreeNode* readFromStream(std::istream&);
   void getFromTree(TreeNode*, std::string&, unsigned char&);
   std::string traverse(std::string);
-  std::string reconvert(unsigned char);
-  std::string reconvertWithoutFill(unsigned char);
+  //std::string reconvert(unsigned char);
+  //std::string reconvertWithoutFill(unsigned char);
+  std::string strPrint(TreeNode*);
   TreeNode *root;
 
 public:
@@ -52,12 +53,12 @@ public:
   void printLeaves();
   friend std::ostream& operator<< (std::ostream&, const HuffmanTree&);
 
-  std::string decompress(const std::string&);
+  std::string decompress(const std::string&, const std::string&);
   void read(std::istream&);
-
+  std::string compress (const std::string&);
   //static std::string compress (const std::string&, const HuffmanTree&);
 
 };
 std::ostream& operator<< (std::ostream&, const HuffmanTree&);
-
+#include "map.h"
 #endif

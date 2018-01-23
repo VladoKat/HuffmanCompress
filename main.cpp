@@ -42,12 +42,12 @@ void compress(){
   std::cout << "\n";
   HuffmanTree tree(table);
   tree.printLeaves();
-  Map map(tree);
-  map.print();
-  std::vector<unsigned char> compressed = map.compress(myString);
+  //Map map(tree);
+  //map.print();
+  std::string compressed = tree.compress(myString);
   std::ofstream out;
   out.open("compressed.txt", std::ios::binary);
-  out << tree;
+  //out << tree;
   for(unsigned char el : compressed){
     out << el;
   }
@@ -58,6 +58,17 @@ void  decompress() {
   std::ifstream input;
   input.open("compressed.txt", std::ios::binary);
   HuffmanTree tree = HuffmanTree();
+  std::string lastBins;
+  unsigned char someChar = '0';
+  while(someChar == '0' || someChar == '1'){
+    someChar = input.peek();
+    if(someChar == '0' || someChar == '1'){
+        lastBins.push_back(someChar);
+        input >> someChar;
+    } else {
+      someChar = 0;
+    }
+  }
   tree.read(input);
   tree.print();
   std::string textToDecompress, temp;
@@ -70,7 +81,7 @@ void  decompress() {
     }
   }
   input.close();
-  std::string decompressed = tree.decompress(textToDecompress);
+  std::string decompressed = tree.decompress(textToDecompress, lastBins);
   //std::cout << decompressed << " - result\n";
   std::ofstream output;
   output.open("result.txt", std::ios::binary);

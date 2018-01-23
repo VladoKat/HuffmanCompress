@@ -1,6 +1,11 @@
+#ifndef MAP_H
+#define MAP_H
+
 #include<string>
 #include<vector>
 #include "huffman_tree.h"
+//class HuffmanTree;
+
 class Map {
 private:
   //friend class HuffmanTree;
@@ -14,7 +19,9 @@ private:
   void fillHelper(HuffmanTree::TreeNode*, std::string);
 public:
   std::string operator[] (char);
-  std::vector<unsigned char> compress (const std::string&);
+  //std::vector<unsigned char> compress (const std::string&);
   Map (const HuffmanTree&);
   void print();
 };
+
+#endif

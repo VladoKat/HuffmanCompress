@@ -1,7 +1,55 @@
 #include "huffman_tree.h"
 #include<vector>
 #include<stack>
+#include<cmath>
 
+std::string reconvert(unsigned char symbol){
+  std::string result;
+  std::stack<unsigned char> buffer;
+  unsigned char toPush;
+  while(symbol > 0){
+    toPush = symbol % 2 + 48;
+    symbol /= 2;
+    buffer.push(toPush);
+  }
+  int size = buffer.size();
+  while(size < 8){
+    buffer.push('0');
+    size++;
+  }
+  while(!buffer.empty()){
+    result.push_back(buffer.top());
+    buffer.pop();
+  }
+
+  return result;
+}
+
+// std::string reconvertWithoutFill(unsigned char symbol){
+//   std::string result;
+//   std::stack<unsigned char> buffer;
+//   unsigned char toPush;
+//   while(symbol > 0){
+//     toPush = symbol % 2 + 48;
+//     symbol /= 2;
+//     buffer.push(toPush);
+//   }
+//   while(!buffer.empty()){
+//     result.push_back(buffer.top());
+//     buffer.pop();
+//   }
+//
+//   return result;
+// }
+
+unsigned char convert(const std::string& str){
+  unsigned char result;
+  int exponent = str.length();
+  for(int i = 0; i < exponent; i++){
+    result += (str[i]-48)*pow(2, (exponent-i-1));
+  }
+  return result;
+}
 
 
 HuffmanTree::TreeNode::~TreeNode(){
@@ -128,6 +176,16 @@ void HuffmanTree::writeHelper (std::ostream& out, TreeNode* curr){
   writeHelper (out, curr->right);
   out << "}";
 }
+
+std::string HuffmanTree::strPrint(TreeNode* curr){
+  if (!curr)
+  {
+    return "{}";
+  }
+  std::string symbol;
+  symbol.push_back(curr->symbol);
+  return "{" + symbol + strPrint (curr->left) + strPrint(curr->right) + "}";
+}
 std::ostream& operator<< (std::ostream& out, const HuffmanTree& tree){
   HuffmanTree::writeHelper(out, tree.root);
   return out;
@@ -154,12 +212,12 @@ void HuffmanTree::read(std::istream& input){
   this->root = readFromStream(input);
 }
 
-std::string HuffmanTree::decompress(const std::string& txt){
+std::string HuffmanTree::decompress(const std::string& txt, const std::string& lastBins){
   std::string tempRes = "";
-  for(int i = 0; i < txt.size()-1; i++){
-    tempRes = tempRes + this->reconvert(txt[i]);
-  }
-  tempRes = tempRes + reconvertWithoutFill(txt[txt.size()-1]);
+  for(int i = 0; i < txt.size(); i++){
+    tempRes = tempRes + reconvert(txt[i]);
+  };
+  tempRes = tempRes + lastBins;
   std::cout << " binary - " << tempRes << "\n";
   std::string result = traverse(tempRes);
   return result;
@@ -196,41 +254,23 @@ std::string HuffmanTree::traverse(std::string binary){
   return symb + traverse(binary);
 }
 
-std::string HuffmanTree::reconvertWithoutFill(unsigned char symbol){
+std::string HuffmanTree::compress (const std::string& textToCompress){
+  Map map(*this);
   std::string result;
-  std::stack<unsigned char> buffer;
-  unsigned char toPush;
-  while(symbol > 0){
-    toPush = symbol % 2 + 48;
-    symbol /= 2;
-    buffer.push(toPush);
+  for(int i = 0; i < textToCompress.size(); i++){
+    result = result + map[textToCompress[i]];
   }
-  while(!buffer.empty()){
-    result.push_back(buffer.top());
-    buffer.pop();
+  int index = 0;
+  std::string realResult;
+  int iterations = result.size()/8;
+  for(int i = 0; i < iterations; i++){
+    std::cout << result.substr(8*i, 8) << " ";
+    unsigned char num = convert(result.substr(8*i, 8));
+    std::cout << num << "\n";
+    realResult.push_back(num);
+    //std::cout << realResult << "--------";
   }
+  realResult = (result.substr(iterations*8, 8)) + strPrint(root) + realResult;
 
-  return result;
-}
-
-std::string HuffmanTree::reconvert(unsigned char symbol){
-  std::string result;
-  std::stack<unsigned char> buffer;
-  unsigned char toPush;
-  while(symbol > 0){
-    toPush = symbol % 2 + 48;
-    symbol /= 2;
-    buffer.push(toPush);
-  }
-  int size = buffer.size();
-  while(size < 8){
-    buffer.push('0');
-    size++;
-  }
-  while(!buffer.empty()){
-    result.push_back(buffer.top());
-    buffer.pop();
-  }
-
-  return result;
+  return realResult;
 }
