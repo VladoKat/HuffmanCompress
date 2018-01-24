@@ -214,12 +214,16 @@ void HuffmanTree::read(std::istream& input){
 
 std::string HuffmanTree::decompress(const std::string& txt, const std::string& lastBins){
   std::string tempRes = "";
+
+
   for(int i = 0; i < txt.size(); i++){
     tempRes = tempRes + reconvert(txt[i]);
   };
+  std::cout<< "after converting";
   tempRes = tempRes + lastBins;
-  std::cout << " binary - " << tempRes << "\n";
-  std::string result = traverse(tempRes);
+  //std::cout << " binary - " << tempRes << "\n";
+  std::string result;
+  traverse(tempRes, result);
   return result;
 }
 
@@ -228,8 +232,8 @@ void HuffmanTree::getFromTree(TreeNode* curr, std::string& str, unsigned char& r
     result = curr->symbol;
     return;
   }
-  if(str.empty()){
-    std::cout << "smth wrong!";
+  if(str.empty() || !curr){
+    std::cout << "smth wrong!___________________________";
     return;
   }
 
@@ -241,17 +245,14 @@ void HuffmanTree::getFromTree(TreeNode* curr, std::string& str, unsigned char& r
     getFromTree(curr->right, str, result);
   }
 }
-std::string HuffmanTree::traverse(std::string binary){
+void HuffmanTree::traverse(std::string binary,std::string& result){
   //std::cout << "traversing\n";
-  if(binary == ""){
-    return "";
-  }
+
   unsigned char toPush = 0;
-  getFromTree(root, binary, toPush);
-  std::string symb;
-  symb.push_back(toPush);
-  std::cout << toPush << " ";
-  return symb + traverse(binary);
+  while(!binary.empty()){
+    getFromTree(root, binary, toPush);
+    result.push_back(toPush);
+  }
 }
 
 std::string HuffmanTree::compress (const std::string& textToCompress){

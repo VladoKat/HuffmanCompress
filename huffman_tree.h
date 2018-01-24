@@ -36,7 +36,7 @@ private:
   static void writeHelper (std::ostream&, TreeNode*);
   TreeNode* readFromStream(std::istream&);
   void getFromTree(TreeNode*, std::string&, unsigned char&);
-  std::string traverse(std::string);
+  void traverse(std::string, std::string&);
   //std::string reconvert(unsigned char);
   //std::string reconvertWithoutFill(unsigned char);
   std::string strPrint(TreeNode*);
