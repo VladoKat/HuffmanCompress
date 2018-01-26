@@ -1,10 +1,11 @@
 #include "map.h"
 #include<cstring>
+//#include<pair>
 //#include<cmath>
 
 void Map::fillHelper(HuffmanTree::TreeNode* curr, std::string label){
   if(curr && !curr->left && !curr->right){
-    table.push_back(lspair(label, curr->symbol));
+    table.insert(std::pair<char, std::string>(curr->symbol, label));
   }
   if(!curr){
     return;
@@ -18,20 +19,15 @@ Map::Map(const HuffmanTree& tree){
 }
 
 std::string Map::operator[] (char symbol){
-  for(int i = 0; i < table.size(); i++){
-    if(table[i].symbol == symbol){
-      return table[i].label;
-    }
-  }
-  return 0;
+  return table[symbol];
 }
 
 
 
-void Map::print() {
-  std::cout << "size = " << table.size() << "\n";
-  for(int i = 0 ; i < table.size(); i++){
-    std::cout << table[i].symbol << " - " << table[i].label << "\n";
-  }
-  std::cout << "\n";
-}
+// void Map::print() {
+//   std::cout << "size = " << table.size() << "\n";
+//   for(int i = 0 ; i < table.size(); i++){
+//     std::cout << table[i].symbol << " - " << table[i].label << "\n";
+//   }
+//   std::cout << "\n";
+// }
