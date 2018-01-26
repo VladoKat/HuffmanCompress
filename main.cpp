@@ -30,15 +30,21 @@ void compress(){
   std::ifstream in;
   in.open("text3.txt", std::ios::binary);
   std::string myString;
-  std::string line;
-  while (getline (in,line)){
-    myString += line;
-    myString.push_back('\n');
+  FrequencyTable table;
+  char symb;
+  bool eof = false;
+  while (!eof){
+    in.get(symb);
+    if(in.eof()){
+      eof = true;
+    } else {
+      table[symb]++;
+      myString.push_back(symb);
+    }
   }
   in.close();
   std::cout << myString << "\n";
 
-  FrequencyTable table(myString);
   table.print();
   std::cout << "\n";
   HuffmanTree tree(table);

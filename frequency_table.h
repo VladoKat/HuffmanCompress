@@ -1,25 +1,18 @@
 #ifndef FREQUENCYTABLE_H
 #define FREQUENCYTABLE_H
 
-#include <string>
-#include <vector>
+#include<map>
 
-class HuffmanTree;
+//class HuffmanTree;
 
 class FrequencyTable{
 private:
-  friend class HuffmanTree;
-  struct pair {
-    char symbol;
-    int numOcc;
-
-    pair(char _symbol, int _numOcc) : symbol(_symbol), numOcc(_numOcc){}
-  };
-
-  std::vector<pair> table;
+  std::map<unsigned char, int> table;
 public:
-  FrequencyTable(std::string);
+  FrequencyTable();
+  int& operator[] (unsigned char);
   void print();
+  int size();
 };
 
 #endif

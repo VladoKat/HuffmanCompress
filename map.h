@@ -4,11 +4,9 @@
 #include<string>
 #include<vector>
 #include "huffman_tree.h"
-//class HuffmanTree;
 
 class Map {
 private:
-  //friend class HuffmanTree;
   struct lspair{
     std::string label;
     char symbol;
@@ -19,7 +17,6 @@ private:
   void fillHelper(HuffmanTree::TreeNode*, std::string);
 public:
   std::string operator[] (char);
-  //std::vector<unsigned char> compress (const std::string&);
   Map (const HuffmanTree&);
   void print();
 };

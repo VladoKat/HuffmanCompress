@@ -156,8 +156,11 @@ void HuffmanTree::makeTree(std::vector<HuffmanTree*>& trees){
 
 HuffmanTree::HuffmanTree(FrequencyTable table){
   std::vector<HuffmanTree*> trees;
-  for(int i = 0; i < table.table.size(); i++){
-    trees.push_back(new HuffmanTree(table.table[i].numOcc, table.table[i].symbol)) ;
+  for(int symb = 0; symb < table.size(); symb++){
+    if(table[symb] > 0){
+      trees.push_back(new HuffmanTree(table[symb], (unsigned char)symb)) ;
+    }
+
   }
   makeTree(trees);
   root = copyFrom(trees[0]->root);
