@@ -33,6 +33,7 @@ void compress(){
   std::string line;
   while (getline (in,line)){
     myString += line;
+    myString.push_back('\n');
   }
   in.close();
   std::cout << myString << "\n";
