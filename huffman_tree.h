@@ -50,8 +50,6 @@ public:
   std::string decompress(const std::string&, const std::string&);
   void read(std::istream&);
   std::string compress (const std::string&);
-  //static std::string compress (const std::string&, const HuffmanTree&);
-
 };
 std::ostream& operator<< (std::ostream&, const HuffmanTree&);
 #include "map.h"

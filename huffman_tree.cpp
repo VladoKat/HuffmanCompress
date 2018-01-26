@@ -107,7 +107,6 @@ HuffmanTree::HuffmanTree(int numOcc, char symbol) {
 }
 
 HuffmanTree HuffmanTree::findMin(std::vector<HuffmanTree*> trees){
-  //std::cout << "findingMIn\n";
   int min = trees[0]->root->numOcc;
   HuffmanTree* minTree = trees[0];
   for(HuffmanTree* tree : trees){
@@ -140,17 +139,10 @@ void HuffmanTree::makeTree(std::vector<HuffmanTree*>& trees){
   HuffmanTree::remove(trees, min1);
   HuffmanTree min2 = findMin(trees);
   HuffmanTree::remove(trees, min2);
-//  std::cout << "removed\n";
-  //creating new tree
   HuffmanTree* toPush = new HuffmanTree(min1.root->numOcc + min2.root->numOcc,min1.root->symbol);
   toPush->root->left = copyFrom(min1.root);
   toPush->root->right = copyFrom(min2.root);
-  //end of creating new tree
   trees.push_back(toPush);
-  // for(int i = 0 ; i < trees.size(); i++){
-  //   trees[i]->print();
-  // }
-  // std::cout << "\n\n";
   makeTree(trees);
 }
 
@@ -164,7 +156,6 @@ HuffmanTree::HuffmanTree(FrequencyTable table){
   }
   makeTree(trees);
   root = copyFrom(trees[0]->root);
-  //trees[0]->printLeaves();
 }
 
 void HuffmanTree::writeHelper (std::ostream& out, TreeNode* curr){
@@ -195,7 +186,7 @@ std::ostream& operator<< (std::ostream& out, const HuffmanTree& tree){
 }
 
 HuffmanTree::TreeNode* HuffmanTree::readFromStream(std::istream& in){
-  //(A(A()())(C(C(C()())(D()()))(B(B()())(R()()))))
+  //Directly copied from Kalin's LISP print
   unsigned char nextChar;
   nextChar = in.get();//assert (nextChar == '(');
   nextChar = in.get(); // get Value
@@ -222,9 +213,7 @@ std::string HuffmanTree::decompress(const std::string& txt, const std::string& l
   for(int i = 0; i < txt.size(); i++){
     tempRes = tempRes + reconvert(txt[i]);
   };
-  std::cout<< "after converting";
   tempRes = tempRes + lastBins;
-  //std::cout << " binary - " << tempRes << "\n";
   std::string result;
   traverse(tempRes, result);
   return result;
@@ -249,7 +238,6 @@ void HuffmanTree::getFromTree(TreeNode* curr, std::string& str, unsigned char& r
   }
 }
 void HuffmanTree::traverse(std::string binary,std::string& result){
-  //std::cout << "traversing\n";
 
   unsigned char toPush = 0;
   while(!binary.empty()){
@@ -268,11 +256,8 @@ std::string HuffmanTree::compress (const std::string& textToCompress){
   std::string realResult;
   int iterations = result.size()/8;
   for(int i = 0; i < iterations; i++){
-    std::cout << result.substr(8*i, 8) << " ";
     unsigned char num = convert(result.substr(8*i, 8));
-    std::cout << num << "\n";
     realResult.push_back(num);
-    //std::cout << realResult << "--------";
   }
   realResult = (result.substr(iterations*8, 8)) + strPrint(root) + realResult;
 

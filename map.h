@@ -7,12 +7,6 @@
 
 class Map {
 private:
-  // struct lspair{
-  //   std::string label;
-  //   char symbol;
-  //
-  //   lspair(const std::string& _label, char _symbol) : label(_label), symbol(_symbol){}
-  // };
   std::map<char, std::string> table;
   void fillHelper(HuffmanTree::TreeNode*, std::string);
 public:

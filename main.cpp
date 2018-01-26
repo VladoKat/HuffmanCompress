@@ -7,28 +7,10 @@
 #include "huffman_tree.cpp"
 #include "map.cpp"
 
-// void fullTest(){
-//   std::ifstream in;
-//   in.open("text.txt");
-//   std::string myString;
-//   std::string line;
-//   while (getline (in,line)){
-//     myString += line;
-//   }
-//   in.close();
-//   std::cout << myString << "\n";
-//
-//   FrequencyTable table(myString);
-//   HuffmanTree tree(table);
-//   std::ofstream out;
-//   out.open("compressed_" + name);
-//   out << tree.getInfo();
-//   out.close();
-// }
 
-void compress(){
+void compress(std::string fileToComp = "text.txt", std::string compressedFile = "compressed.txt"){
   std::ifstream in;
-  in.open("text3.txt", std::ios::binary);
+  in.open(fileToComp, std::ios::binary);
   std::string myString;
   FrequencyTable table;
   char symb;
@@ -43,27 +25,19 @@ void compress(){
     }
   }
   in.close();
-  std::cout << myString << "\n";
-
-  table.print();
-  std::cout << "\n";
   HuffmanTree tree(table);
-  tree.printLeaves();
-  //Map map(tree);
-  //map.print();
   std::string compressed = tree.compress(myString);
   std::ofstream out;
-  out.open("compressed.txt", std::ios::binary);
-  //out << tree;
+  out.open(compressedFile, std::ios::binary);
   for(unsigned char el : compressed){
     out << el;
   }
   out.close();
 }
 
-void  decompress() {
+void  decompress(std::string fileToDec = "compressed.txt", std::string resultFile = "result.txt") {
   std::ifstream input;
-  input.open("compressed.txt", std::ios::binary);
+  input.open(fileToDec , std::ios::binary);
   HuffmanTree tree = HuffmanTree();
   std::string lastBins;
   unsigned char someChar = '0';
@@ -77,7 +51,6 @@ void  decompress() {
     }
   }
   tree.read(input);
-  tree.print();
   std::string textToDecompress, temp;
   bool eof = input.eof();
   while(!eof){
@@ -89,40 +62,71 @@ void  decompress() {
   }
   input.close();
   std::string decompressed = tree.decompress(textToDecompress, lastBins);
-  //std::cout << decompressed << " - result\n";
   std::ofstream output;
-  output.open("result.txt", std::ios::binary);
+  output.open(resultFile, std::ios::binary);
   output << decompressed;
   output.close();
 }
 
-std::string reconvert2(unsigned char symbol){
-  std::string result;
-  std::stack<unsigned char> buffer;
-  unsigned char toPush;
-  while(symbol > 0){
-    toPush = symbol % 2 + 48;
-    symbol /= 2;
-    buffer.push(toPush);
-  }
-  while(!buffer.empty()){
-    result.push_back(buffer.top());
-    buffer.pop();
-  }
-  return result;
-}
-int main(){
-  compress();
-  decompress();
-  // std::string str = "a";
-  // std::cout << str.substr(1, 2) << " - ";
- //std::cout << reconvert2('g') << "\n";
-// std::ifstream input;
-// input.open("compressed.txt", std::ios::binary);
-// HuffmanTree tree = HuffmanTree();
-// tree.read(input);
-// tree.print();
-  //std::cout << convert2("01101110") << " " << convert2("10001010") << " " << convert2("1101110") << "\n";
+void UI(){
+  std::string command;
+  std::getline(std::cin, command);
+  int compressPos = command.find("-c ");
+  int decompressPos = command.find("-d ");
+  bool isCompress = compressPos != std::string::npos;
+  bool isDecompress = decompressPos != std::string::npos;
+  std::string inputFile;
+  std::string outputFile;
+  int inputFilePos = command.find("-i ");
+  int outputFilePos = command.find("-o ");
+  bool foundInput = false;
+  bool foundOutput = false;
 
-  //std::cout << std::to_string(42) << "\n";
+  if(inputFilePos != std::string::npos){
+    foundInput = true;
+    inputFilePos += 3;
+    int i = inputFilePos;
+    while(command[i] != ' ' && command.size()){
+      inputFile.push_back(command[i]);
+      i++;
+    }
+  }
+  if(foundInput && outputFilePos != std::string::npos){
+      foundOutput = true;
+      outputFilePos+=3;
+      int i = outputFilePos;
+      while(command[i] != ' ' && i < command.size()){
+        outputFile.push_back(command[i]);
+        i++;
+      }
+  }
+
+  if(!foundInput){
+    std::cout << "No file to do smth with\n";
+  } else {
+    if(!foundOutput){
+      if(isCompress){
+        compress(inputFile);
+      } else if (isDecompress){
+        decompress(inputFile);
+      } else {
+        std::cout << "No mode pointed to work with\n";
+      }
+    } else {
+      if(isCompress){
+        compress(inputFile, outputFile);
+      } else if (isDecompress){
+        decompress(inputFile, outputFile);
+      } else {
+        std::cout << "No mode pointed to work with\n";
+      }
+    }
+  }
+}
+
+
+int main(){
+  UI();
+  // compress();
+  // decompress();
 }
