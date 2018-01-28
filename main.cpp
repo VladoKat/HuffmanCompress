@@ -8,7 +8,7 @@
 #include "map.cpp"
 
 
-void compress(std::string fileToComp = "text.txt", std::string compressedFile = "compressed.txt"){
+void compress(std::string fileToComp = "text3.txt", std::string compressedFile = "compressed.txt"){
   std::ifstream in;
   in.open(fileToComp, std::ios::binary);
   std::string myString;
@@ -126,7 +126,7 @@ void UI(){
 
 
 int main(){
-  UI();
-  // compress();
-  // decompress();
+//  UI();
+  compress();
+  decompress();
 }
