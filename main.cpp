@@ -126,7 +126,7 @@ void UI(){
 
 
 int main(){
-//  UI();
-  compress();
-  decompress();
+  UI();
+  //compress();
+  //decompress();
 }

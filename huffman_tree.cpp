@@ -256,6 +256,7 @@ std::string HuffmanTree::compress (const std::string& textToCompress){
   std::string realResult;
   int iterations = result.size()/8;
   for(int i = 0; i < iterations; i++){
+    std::cout << ""; //no idea why. crashes otherwise 
     unsigned char num = convert(result.substr(8*i, 8));
     realResult.push_back(num);
   }
