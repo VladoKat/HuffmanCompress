@@ -6,6 +6,7 @@
 void Map::fillHelper(HuffmanTree::TreeNode* curr, std::string label){
   if(curr && !curr->left && !curr->right){
     table.insert(std::pair<char, std::string>(curr->symbol, label));
+    //std::cout << curr->symbol << " " << label << "\n";
   }
   if(!curr){
     return;

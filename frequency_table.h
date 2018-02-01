@@ -3,8 +3,6 @@
 
 #include<map>
 
-//class HuffmanTree;
-
 class FrequencyTable{
 private:
   std::map<unsigned char, int> table;

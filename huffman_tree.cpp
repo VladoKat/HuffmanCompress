@@ -115,7 +115,8 @@ HuffmanTree HuffmanTree::findMin(std::vector<HuffmanTree*> trees){
       minTree = tree;
     }
   }
-  return *minTree;
+  HuffmanTree* newTree = new HuffmanTree(*minTree);
+  return *newTree;
 }
 
 void HuffmanTree::remove(std::vector<HuffmanTree*>& trees, const HuffmanTree& toRemove){
@@ -208,8 +209,6 @@ void HuffmanTree::read(std::istream& input){
 
 std::string HuffmanTree::decompress(const std::string& txt, const std::string& lastBins){
   std::string tempRes = "";
-
-
   for(int i = 0; i < txt.size(); i++){
     tempRes = tempRes + reconvert(txt[i]);
   };
@@ -225,7 +224,12 @@ void HuffmanTree::getFromTree(TreeNode* curr, std::string& str, unsigned char& r
     return;
   }
   if(str.empty() || !curr){
-    std::cout << "smth wrong!___________________________";
+    if(str.empty()){
+      std::cout << "smth wrong!___________________________";
+    }
+    if(!curr){
+      std::cout << "smth other went wrong____________";
+    }
     return;
   }
 
@@ -247,16 +251,16 @@ void HuffmanTree::traverse(std::string binary,std::string& result){
 }
 
 std::string HuffmanTree::compress (const std::string& textToCompress){
-  Map map(*this);
+  Map myMap(*this);
   std::string result;
   for(int i = 0; i < textToCompress.size(); i++){
-    result = result + map[textToCompress[i]];
+    result += myMap[textToCompress[i]];
   }
   int index = 0;
   std::string realResult;
   int iterations = result.size()/8;
   for(int i = 0; i < iterations; i++){
-    std::cout << ""; //no idea why. crashes otherwise 
+    std::cout << ""; //no idea why. crashes otherwise
     unsigned char num = convert(result.substr(8*i, 8));
     realResult.push_back(num);
   }

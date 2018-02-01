@@ -51,13 +51,15 @@ void  decompress(std::string fileToDec = "compressed.txt", std::string resultFil
     }
   }
   tree.read(input);
-  std::string textToDecompress, temp;
+  std::string textToDecompress;//, temp;
+  char symb;
   bool eof = input.eof();
   while(!eof){
-    std::getline(input, temp);
-    textToDecompress = textToDecompress + temp;
+    input.get(symb);
     if(input.eof()){
       eof = true;
+    } else {
+      textToDecompress.push_back(symb);
     }
   }
   input.close();
@@ -126,7 +128,7 @@ void UI(){
 
 
 int main(){
-  UI();
-  //compress();
-  //decompress();
+//  UI();
+  compress();
+  decompress();
 }
